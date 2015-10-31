@@ -1,0 +1,20 @@
+{
+    "name": "iutbay/yii2-mpdf",
+    "description": "mPDF response formatter for Yii2",
+    "keywords": ["yii2", "extension", "mpdf", "pdf"],
+    "homepage": "https://github.com/iutbay/yii2-mpdf",
+    "type": "yii2-extension",
+    "authors": [
+        {
+            "name": "Kevin LEVRON",
+            "email": "kevin.levron@gmail.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "*",
+        "mpdf/mpdf": ">=6.0.0"
+    },
+    "autoload": {
+        "psr-4": {"iutbay\\yii2mpdf\\": ""}
+    }
+}
