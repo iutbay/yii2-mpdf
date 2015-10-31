@@ -5,6 +5,7 @@ namespace iutbay\yii2mpdf;
 use Yii;
 use yii\base\Component;
 use yii\web\ResponseFormatterInterface;
+use yii\helpers\ArrayHelper;
 
 /**
  * mPDF response formatter.
@@ -27,12 +28,12 @@ class MPDFResponseFormatter extends Component implements ResponseFormatterInterf
     public $marginFooter = 9;
     public $orientation = 'P';
 
+    // mPDF attributes
+    public $options = [];
+
     // mPDF output parameters
     public $outputName = '';
     public $outputDest = 'I';
-
-    // mPDF attributes
-    public $mPDFAttributes = [];
 
     /**
      * @var string the Content-Type header for the response
@@ -44,7 +45,6 @@ class MPDFResponseFormatter extends Component implements ResponseFormatterInterf
      */
     public function format($response)
     {
-        //$response->getHeaders()->set('Content-Type', $this->contentType);
         $this->formatMPDF($response);
     }
 
@@ -68,20 +68,29 @@ class MPDFResponseFormatter extends Component implements ResponseFormatterInterf
             $this->orientation
         );
 
-        foreach ($this->mPDFAttributes as $attribute => $value) {
+        foreach ($this->options as $attribute => $value) {
             $mpdf->$attribute = $value;
         }
 
-        $mpdf->WriteHTML($response->data);
+        if (is_string($response->data)) {
+            $mpdf->WriteHTML($response->data);
+        } else if (is_array($response->data)) {
+            $this->outputName = ArrayHelper::getValue($response->data, 'outputName', $this->outputName);
+            $this->outputDest = ArrayHelper::getValue($response->data, 'outputDest', $this->outputDest);
+            if (isset($response->data['content'])) {
+                $mpdf->WriteHTML($response->data['content']);
+            }
+        }
+
         $mpdf->Output($this->outputName, $this->outputDest);
     }
 
     /**
-     * 
+     * Set DI container class configuration
      */
-    public static function setOptions($options)
+    public static function setClassConfiguration($config)
     {
-        Yii::$container->set(self::className(), $options);
+        Yii::$container->set(self::className(), $config);
     }
 
 }
