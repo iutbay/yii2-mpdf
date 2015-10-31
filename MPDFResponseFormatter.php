@@ -2,6 +2,7 @@
 
 namespace iutbay\yii2mpdf;
 
+use Yii;
 use yii\base\Component;
 use yii\web\ResponseFormatterInterface;
 
@@ -13,6 +14,7 @@ use yii\web\ResponseFormatterInterface;
 class MPDFResponseFormatter extends Component implements ResponseFormatterInterface
 {
 
+    // mPDF construtor parameters
     public $mode = '';
     public $format = 'A4';
     public $defaultFontSize = 0;
@@ -24,9 +26,14 @@ class MPDFResponseFormatter extends Component implements ResponseFormatterInterf
     public $marginHeader = 9;
     public $marginFooter = 9;
     public $orientation = 'P';
-    public $options = [];
-    public $dest = 'S';
-    
+
+    // mPDF output parameters
+    public $outputName = '';
+    public $outputDest = 'I';
+
+    // mPDF attributes
+    public $mPDFAttributes = [];
+
     /**
      * @var string the Content-Type header for the response
      */
@@ -37,9 +44,18 @@ class MPDFResponseFormatter extends Component implements ResponseFormatterInterf
      */
     public function format($response)
     {
-        $response->getHeaders()->set('Content-Type', $this->contentType);
+        //$response->getHeaders()->set('Content-Type', $this->contentType);
+        $this->formatMPDF($response);
+    }
 
-        $mpdf = new \mPDF($this->mode,
+    /**
+     * 
+     * @param \yii\web\Response $response
+     */
+    public function formatMPDF($response)
+    {
+        $mpdf = new \mPDF(
+            $this->mode,
             $this->format,
             $this->defaultFontSize,
             $this->defaultFont,
@@ -51,13 +67,21 @@ class MPDFResponseFormatter extends Component implements ResponseFormatterInterf
             $this->marginFooter,
             $this->orientation
         );
-        
-        foreach ($this->options as $key => $option) {
-            $mpdf->$key = $option;
+
+        foreach ($this->mPDFAttributes as $attribute => $value) {
+            $mpdf->$attribute = $value;
         }
 
         $mpdf->WriteHTML($response->data);
-        return $mpdf->Output('', $this->dest);
+        $mpdf->Output($this->outputName, $this->outputDest);
+    }
+
+    /**
+     * 
+     */
+    public static function setOptions($options)
+    {
+        Yii::$container->set(self::className(), $options);
     }
 
 }
