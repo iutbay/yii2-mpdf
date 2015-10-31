@@ -28,7 +28,10 @@ class MPDFResponseFormatter extends Component implements ResponseFormatterInterf
     public $marginFooter = 9;
     public $orientation = 'P';
 
-    // mPDF attributes
+    /**
+     * mPDF attributes
+     * @var array
+     */
     public $options = [];
 
     // mPDF output parameters
@@ -36,9 +39,28 @@ class MPDFResponseFormatter extends Component implements ResponseFormatterInterf
     public $outputDest = 'I';
 
     /**
-     * @var string the Content-Type header for the response
+     * CSS
+     * @var string
      */
-    public $contentType = 'application/pdf';
+    public $css;
+
+    /**
+     * CSS files
+     * @var array
+     */
+    public $cssFiles = [];
+
+    /**
+     * mPDF Header, to use with SetHeader()
+     * @var array
+     */
+    public $header;
+
+    /**
+     * mPDF Header, to use with SetFooter()
+     * @var array
+     */
+    public $footer;
 
     /**
      * @inheritdoc
@@ -72,17 +94,52 @@ class MPDFResponseFormatter extends Component implements ResponseFormatterInterf
             $mpdf->$attribute = $value;
         }
 
-        if (is_string($response->data)) {
-            $mpdf->WriteHTML($response->data);
-        } else if (is_array($response->data)) {
-            $this->outputName = ArrayHelper::getValue($response->data, 'outputName', $this->outputName);
-            $this->outputDest = ArrayHelper::getValue($response->data, 'outputDest', $this->outputDest);
-            if (isset($response->data['content'])) {
-                $mpdf->WriteHTML($response->data['content']);
+        if (isset($this->css))
+            $mpdf->WriteHTML($this->css, 1);
+
+        if (is_array($this->cssFiles)) {
+            foreach ($this->cssFiles as $file) {
+                $css = @file_get_contents(Yii::getAlias($file));
+                if (!empty($css)) $mpdf->WriteHTML($css, 1);
             }
         }
 
+        if (is_string($response->data)) {
+            $this->setMPDFHeader($mpdf, $this->header);
+            $this->setMPDFFooter($mpdf, $this->footer);
+            $mpdf->WriteHTML($response->data, 2);
+        } else if (is_array($response->data)) {
+            $this->outputName = ArrayHelper::getValue($response->data, 'outputName', $this->outputName);
+            $this->outputDest = ArrayHelper::getValue($response->data, 'outputDest', $this->outputDest);
+            $this->setMPDFHeader($mpdf, $response->data['header']);
+            $this->setMPDFFooter($mpdf, $response->data['footer']);
+            if (isset($response->data['content']))
+                $mpdf->WriteHTML($response->data['content'], 2);
+        }
+
         $mpdf->Output($this->outputName, $this->outputDest);
+    }
+    
+    /**
+     * Set mPDF header
+     */
+    public function setMPDFHeader($mpdf, $header)
+    {
+        if (empty($header))
+            return;
+        
+        $mpdf->SetHeader($header);
+    }
+
+    /**
+     * Set mPDF footer
+     */
+    public function setMPDFFooter($mpdf, $footer)
+    {
+        if (empty($footer))
+            return;
+        
+        $mpdf->SetFooter($footer);
     }
 
     /**
