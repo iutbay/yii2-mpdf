@@ -7,6 +7,7 @@ use yii\web\ResponseFormatterInterface;
 
 /**
  * mPDF response formatter.
+ * 
  * @author Kevin LEVRON <kevin.levron@gmail.com>
  */
 class MPDFResponseFormatter extends Component implements ResponseFormatterInterface
