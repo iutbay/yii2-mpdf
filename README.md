@@ -46,25 +46,25 @@ Add the following lines in the components section of your application configurat
       // mPDF options : http://mpdf1.com/manual/index.php?tid=273
       //'mPDFOptions' => [],
 
-      // ouput options : http://mpdf1.com/manual/index.php?tid=125
-      //'outputName' => '',
-      //'outputDest' => 'I',
-      
+      // css file path aliases, e.g. ['@app/web/css/pdf.css']
+      //'cssFiles' => [],
+
       // page header : http://mpdf1.com/manual/index.php?tid=149
       //'header' => null,
       
       // page footer : http://mpdf1.com/manual/index.php?tid=151
       //'footer' => null,
 
-      // css file paths (or aliases)
-      //'cssFiles' => [],
+      // ouput options : http://mpdf1.com/manual/index.php?tid=125
+      //'outputName' => '',
+      //'outputDest' => 'I',
     ],
   ],
 ],
 ```
 
-Usage
------
+Usage in controllers
+--------------------
 Example 1 :
 ```php
 public function actionPdf()
@@ -82,11 +82,15 @@ public function actionPdf()
   return [
     'content' => $this->render('pdf'),
     //'options' => [
-    //  'header' => 'Left|Center|Right',
-    //  'footer' => 'Left|Center|{PAGENO}/{nbpg}',
-    //  'outputName' => 'test.pdf',
-    //  'outputDest' => 'D',
+        // page header : http://mpdf1.com/manual/index.php?tid=149
+        //'header' => 'Left|Center|Right',
+        // page footer : http://mpdf1.com/manual/index.php?tid=151
+        //'footer' => 'Left|Center|{PAGENO}/{nbpg}',
+        // ouput options : http://mpdf1.com/manual/index.php?tid=125
+        //'outputName' => 'test.pdf',
+        //'outputDest' => 'D',
     //],
+    // mPDF options : http://mpdf1.com/manual/index.php?tid=273
     //'mPDFOptions' => [],
   ]
 }
