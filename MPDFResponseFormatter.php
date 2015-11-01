@@ -29,10 +29,10 @@ class MPDFResponseFormatter extends Component implements ResponseFormatterInterf
     public $orientation = 'P';
 
     /**
-     * mPDF attributes
+     * mPDF options
      * @var array
      */
-    public $options = [];
+    public $mPDFOptions = [];
 
     // mPDF output parameters
     public $outputName = '';
@@ -90,9 +90,7 @@ class MPDFResponseFormatter extends Component implements ResponseFormatterInterf
             $this->orientation
         );
 
-        foreach ($this->options as $attribute => $value) {
-            $mpdf->$attribute = $value;
-        }
+        $this->setMPDFOptions($mpdf, $this->mPDFOptions);
 
         if (isset($this->css))
             $mpdf->WriteHTML($this->css, 1);
@@ -109,10 +107,8 @@ class MPDFResponseFormatter extends Component implements ResponseFormatterInterf
             $this->setMPDFFooter($mpdf, $this->footer);
             $mpdf->WriteHTML($response->data, 2);
         } else if (is_array($response->data)) {
-            $this->outputName = ArrayHelper::getValue($response->data, 'outputName', $this->outputName);
-            $this->outputDest = ArrayHelper::getValue($response->data, 'outputDest', $this->outputDest);
-            $this->setMPDFHeader($mpdf, $response->data['header']);
-            $this->setMPDFFooter($mpdf, $response->data['footer']);
+            $this->setOptions($mpdf, $response->data['options']);
+            $this->setMPDFOptions($mpdf, $response->data['mPDFOptions']);
             if (isset($response->data['content']))
                 $mpdf->WriteHTML($response->data['content'], 2);
         }
@@ -120,6 +116,38 @@ class MPDFResponseFormatter extends Component implements ResponseFormatterInterf
         $mpdf->Output($this->outputName, $this->outputDest);
     }
     
+    /**
+     * Set formatter options
+     */
+    public function setOptions($mpdf, $options)
+    {
+        if (!is_array($options))
+            return;
+
+        foreach ($options as $attribute => $value) {
+            $this->$attribute = $value;
+
+            if ($attribute==='header')
+                $this->setMPDFHeader($mpdf, $value);
+
+            if ($attribute==='footer')
+                $this->setMPDFFooter($mpdf, $value);
+        }
+    }
+
+    /**
+     * Set mPDF options
+     */
+    public function setMPDFOptions($mpdf, $options)
+    {
+        if (!is_array($options))
+            return;
+
+        foreach ($options as $attribute => $value) {
+            $mpdf->$attribute = $value;
+        }
+    }
+
     /**
      * Set mPDF header
      */
