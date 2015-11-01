@@ -2,6 +2,8 @@
 
 [mPDF](http://www.mpdf1.com/) response formatter for Yii2.
 
+https://packagist.org/packages/iutbay/yii2-mpdf
+
 Installation
 ------------
 The preferred way to install this response formatter is through [composer](http://getcomposer.org/download/).
