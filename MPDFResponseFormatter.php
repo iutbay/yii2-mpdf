@@ -15,7 +15,10 @@ use yii\helpers\ArrayHelper;
 class MPDFResponseFormatter extends Component implements ResponseFormatterInterface
 {
 
-    // mPDF construtor parameters
+    /**
+     * mPDF construtor parameters
+     * @link http://mpdf1.com/manual/index.php?tid=184
+     */
     public $mode = '';
     public $format = 'A4';
     public $defaultFontSize = 0;
@@ -30,19 +33,10 @@ class MPDFResponseFormatter extends Component implements ResponseFormatterInterf
 
     /**
      * mPDF options
+     * @link http://mpdf1.com/manual/index.php?tid=273
      * @var array
      */
     public $mPDFOptions = [];
-
-    // mPDF output parameters
-    public $outputName = '';
-    public $outputDest = 'I';
-
-    /**
-     * CSS
-     * @var string
-     */
-    public $css;
 
     /**
      * CSS files
@@ -51,16 +45,34 @@ class MPDFResponseFormatter extends Component implements ResponseFormatterInterf
     public $cssFiles = [];
 
     /**
-     * mPDF Header, to use with \mPDF::SetHeader()
+     * CSS
+     * @var string
+     */
+    public $css;
+
+    /**
+     * mPDF header
+     * @see \mPDF::SetHeader()
+     * @link http://mpdf1.com/manual/index.php?tid=149
      * @var array
      */
     public $header;
 
     /**
-     * mPDF Header, to use with \mPDF::SetFooter()
+     * mPDF footer
+     * @see \mPDF::SetFooter()
+     * @link http://mpdf1.com/manual/index.php?tid=151
      * @var array
      */
     public $footer;
+
+    /**
+     * mPDF output options
+     * @see \mPDF::Output()
+     * @link http://mpdf1.com/manual/index.php?tid=125
+     */
+    public $outputName = '';
+    public $outputDest = 'I';
 
     /**
      * @inheritdoc
@@ -74,7 +86,7 @@ class MPDFResponseFormatter extends Component implements ResponseFormatterInterf
      * 
      * @param \yii\web\Response $response
      */
-    public function formatMPDF($response)
+    protected function formatMPDF($response)
     {
         $mpdf = new \mPDF(
             $this->mode,
@@ -92,15 +104,15 @@ class MPDFResponseFormatter extends Component implements ResponseFormatterInterf
 
         $this->setMPDFOptions($mpdf, $this->mPDFOptions);
 
-        if (isset($this->css))
-            $mpdf->WriteHTML($this->css, 1);
-
         if (is_array($this->cssFiles)) {
             foreach ($this->cssFiles as $file) {
                 $css = @file_get_contents(Yii::getAlias($file));
                 if (!empty($css)) $mpdf->WriteHTML($css, 1);
             }
         }
+
+        if (isset($this->css))
+            $mpdf->WriteHTML($this->css, 1);
 
         if (is_string($response->data)) {
             $this->setMPDFHeader($mpdf, $this->header);
@@ -119,7 +131,7 @@ class MPDFResponseFormatter extends Component implements ResponseFormatterInterf
     /**
      * Set formatter options
      */
-    public function setOptions($mpdf, $options)
+    protected function setOptions($mpdf, $options)
     {
         if (!is_array($options))
             return;
@@ -138,7 +150,7 @@ class MPDFResponseFormatter extends Component implements ResponseFormatterInterf
     /**
      * Set mPDF options
      */
-    public function setMPDFOptions($mpdf, $options)
+    protected function setMPDFOptions($mpdf, $options)
     {
         if (!is_array($options))
             return;
@@ -151,7 +163,7 @@ class MPDFResponseFormatter extends Component implements ResponseFormatterInterf
     /**
      * Set mPDF header
      */
-    public function setMPDFHeader($mpdf, $header)
+    protected function setMPDFHeader($mpdf, $header)
     {
         if (empty($header))
             return;
@@ -162,7 +174,7 @@ class MPDFResponseFormatter extends Component implements ResponseFormatterInterf
     /**
      * Set mPDF footer
      */
-    public function setMPDFFooter($mpdf, $footer)
+    protected function setMPDFFooter($mpdf, $footer)
     {
         if (empty($footer))
             return;
