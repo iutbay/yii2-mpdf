@@ -51,13 +51,13 @@ class MPDFResponseFormatter extends Component implements ResponseFormatterInterf
     public $cssFiles = [];
 
     /**
-     * mPDF Header, to use with SetHeader()
+     * mPDF Header, to use with \mPDF::SetHeader()
      * @var array
      */
     public $header;
 
     /**
-     * mPDF Header, to use with SetFooter()
+     * mPDF Header, to use with \mPDF::SetFooter()
      * @var array
      */
     public $footer;
