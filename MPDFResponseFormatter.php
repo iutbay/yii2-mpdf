@@ -114,9 +114,10 @@ class MPDFResponseFormatter extends Component implements ResponseFormatterInterf
         if (isset($this->css))
             $mpdf->WriteHTML($this->css, 1);
 
+        $this->setMPDFHeader($mpdf, $this->header);
+        $this->setMPDFFooter($mpdf, $this->footer);
+
         if (is_string($response->data)) {
-            $this->setMPDFHeader($mpdf, $this->header);
-            $this->setMPDFFooter($mpdf, $this->footer);
             $mpdf->WriteHTML($response->data, 2);
         } else if (is_array($response->data)) {
             $this->setOptions($mpdf, $response->data['options']);
