@@ -32,7 +32,7 @@ Add the following lines in the components section of your application configurat
     'mpdf' => [
       'class' => 'iutbay\yii2mpdf\MPDFResponseFormatter',
       
-      // mPDF constructor parameters : http://mpdf1.com/manual/index.php?tid=184
+      // mPDF constructor options : http://mpdf1.com/manual/index.php?tid=184
       //'mPDFConstructorOptions' => [
         //'mode' => '',
         //'format' => 'A4',
@@ -84,7 +84,7 @@ public function actionPdf()
 {
   Yii::$app->response->format = 'mpdf';
   return [
-    // mPDF construtor options : http://mpdf1.com/manual/index.php?tid=273
+    // mPDF construtor options : http://mpdf1.com/manual/index.php?tid=184
     //'mPDFConstructorOptions' => [],
     // mPDF options : http://mpdf1.com/manual/index.php?tid=273
     //'mPDFOptions' => [],
