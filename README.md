@@ -33,17 +33,19 @@ Add the following lines in the components section of your application configurat
       'class' => 'iutbay\yii2mpdf\MPDFResponseFormatter',
       
       // mPDF constructor parameters : http://mpdf1.com/manual/index.php?tid=184
-      //'mode' => '',
-      //'format' => 'A4',
-      //'defaultFontSize' => 0,
-      //'defaultFont' => '',
-      //'marginLeft' => 15,
-      //'marginRight' => 15,
-      //'marginTop' => 16,
-      //'marginBottom' => 16,
-      //'marginHeader' => 9,
-      //'marginFooter' => 9,
-      //'orientation' => 'P',
+      //'mPDFConstructorOptions' => [
+        //'mode' => '',
+        //'format' => 'A4',
+        //'defaultFontSize' => 10,
+        //'defaultFont' => '',
+        //'marginLeft' => 8,
+        //'marginRight' => 8,
+        //'marginTop' => 15,
+        //'marginBottom' => 15,
+        //'marginHeader' => 5,
+        //'marginFooter' => 5,
+        //'orientation' => 'P',
+      //],
 
       // mPDF options : http://mpdf1.com/manual/index.php?tid=273
       //'mPDFOptions' => [],
@@ -82,6 +84,10 @@ public function actionPdf()
 {
   Yii::$app->response->format = 'mpdf';
   return [
+    // mPDF construtor options : http://mpdf1.com/manual/index.php?tid=273
+    //'mPDFConstructorOptions' => [],
+    // mPDF options : http://mpdf1.com/manual/index.php?tid=273
+    //'mPDFOptions' => [],
     'content' => $this->render('pdf'),
     //'options' => [
         // page header : http://mpdf1.com/manual/index.php?tid=149
@@ -92,8 +98,6 @@ public function actionPdf()
         //'outputName' => 'test.pdf',
         //'outputDest' => 'D',
     //],
-    // mPDF options : http://mpdf1.com/manual/index.php?tid=273
-    //'mPDFOptions' => [],
   ]
 }
 ```
