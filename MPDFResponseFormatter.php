@@ -93,7 +93,17 @@ class MPDFResponseFormatter extends Component implements ResponseFormatterInterf
         $mPDFCO = ArrayHelper::getValue($response->data, 'mPDFConstructorOptions', []);
         $mPDFCO = array_merge($this->mPDFConstructorOptions, $mPDFCO);
         $mpdf = new \mPDF(
-        $mPDFCO['mode'], $mPDFCO['format'], $mPDFCO['defaultFontSize'], $mPDFCO['defaultFont'], $mPDFCO['marginLeft'], $mPDFCO['marginRight'], $mPDFCO['marginTop'], $mPDFCO['marginBottom'], $mPDFCO['marginHeader'], $mPDFCO['marginFooter'], $mPDFCO['orientation']
+            $mPDFCO['mode'],
+            $mPDFCO['format'],
+            $mPDFCO['defaultFontSize'],
+            $mPDFCO['defaultFont'],
+            $mPDFCO['marginLeft'],
+            $mPDFCO['marginRight'],
+            $mPDFCO['marginTop'],
+            $mPDFCO['marginBottom'],
+            $mPDFCO['marginHeader'],
+            $mPDFCO['marginFooter'],
+            $mPDFCO['orientation']
         );
 
         $this->setMPDFOptions($mpdf, $this->mPDFOptions);
