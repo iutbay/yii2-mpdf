@@ -19,17 +19,19 @@ class MPDFResponseFormatter extends Component implements ResponseFormatterInterf
      * mPDF construtor parameters
      * @link http://mpdf1.com/manual/index.php?tid=184
      */
-    public $mode = '';
-    public $format = 'A4';
-    public $defaultFontSize = 0;
-    public $defaultFont = '';
-    public $marginLeft = 15;
-    public $marginRight = 15;
-    public $marginTop = 16;
-    public $marginBottom = 16;
-    public $marginHeader = 9;
-    public $marginFooter = 9;
-    public $orientation = 'P';
+    public $mPDFConstructorOptions = [
+        'mode' => '',
+        'format' => 'A4',
+        'defaultFontSize' => 0,
+        'defaultFont' => '',
+        'marginLeft' => 15,
+        'marginRight' => 15,
+        'marginTop' => 16,
+        'marginBottom' => 16,
+        'marginHeader' => 9,
+        'marginFooter' => 9,
+        'orientation' => 'P',
+    ];
 
     /**
      * mPDF options
@@ -88,18 +90,10 @@ class MPDFResponseFormatter extends Component implements ResponseFormatterInterf
      */
     protected function formatMPDF($response)
     {
+        $mPDFCO = ArrayHelper::getValue($response->data, 'mPDFConstructorOptions', []);
+        $mPDFCO = array_merge($this->mPDFConstructorOptions, $mPDFCO);
         $mpdf = new \mPDF(
-            $this->mode,
-            $this->format,
-            $this->defaultFontSize,
-            $this->defaultFont,
-            $this->marginLeft,
-            $this->marginRight,
-            $this->marginTop,
-            $this->marginBottom,
-            $this->marginHeader,
-            $this->marginFooter,
-            $this->orientation
+        $mPDFCO['mode'], $mPDFCO['format'], $mPDFCO['defaultFontSize'], $mPDFCO['defaultFont'], $mPDFCO['marginLeft'], $mPDFCO['marginRight'], $mPDFCO['marginTop'], $mPDFCO['marginBottom'], $mPDFCO['marginHeader'], $mPDFCO['marginFooter'], $mPDFCO['orientation']
         );
 
         $this->setMPDFOptions($mpdf, $this->mPDFOptions);
@@ -107,7 +101,8 @@ class MPDFResponseFormatter extends Component implements ResponseFormatterInterf
         if (is_array($this->cssFiles)) {
             foreach ($this->cssFiles as $file) {
                 $css = @file_get_contents(Yii::getAlias($file));
-                if (!empty($css)) $mpdf->WriteHTML($css, 1);
+                if (!empty($css))
+                    $mpdf->WriteHTML($css, 1);
             }
         }
 
@@ -128,7 +123,7 @@ class MPDFResponseFormatter extends Component implements ResponseFormatterInterf
 
         $mpdf->Output($this->outputName, $this->outputDest);
     }
-    
+
     /**
      * Set formatter options
      */
@@ -140,10 +135,10 @@ class MPDFResponseFormatter extends Component implements ResponseFormatterInterf
         foreach ($options as $attribute => $value) {
             $this->$attribute = $value;
 
-            if ($attribute==='header')
+            if ($attribute === 'header')
                 $this->setMPDFHeader($mpdf, $value);
 
-            if ($attribute==='footer')
+            if ($attribute === 'footer')
                 $this->setMPDFFooter($mpdf, $value);
         }
     }
@@ -168,7 +163,7 @@ class MPDFResponseFormatter extends Component implements ResponseFormatterInterf
     {
         if (empty($header))
             return;
-        
+
         $mpdf->SetHeader($header);
     }
 
@@ -179,7 +174,7 @@ class MPDFResponseFormatter extends Component implements ResponseFormatterInterf
     {
         if (empty($footer))
             return;
-        
+
         $mpdf->SetFooter($footer);
     }
 
