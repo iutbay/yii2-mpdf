@@ -77,6 +77,11 @@ class MPDFResponseFormatter extends Component implements ResponseFormatterInterf
     public $outputDest = 'I';
 
     /**
+     * @var \Closure
+     */
+    public $beforeWrite;
+
+    /**
      * @inheritdoc
      */
     public function format($response)
@@ -123,10 +128,14 @@ class MPDFResponseFormatter extends Component implements ResponseFormatterInterf
         $this->setMPDFFooter($mpdf, $this->footer);
 
         if (is_string($response->data)) {
+            if ($this->beforeWrite !== null)
+                call_user_func($this->beforeWrite, $mpdf);
             $mpdf->WriteHTML($response->data, 2);
         } else if (is_array($response->data)) {
             $this->setOptions($mpdf, $response->data['options']);
             $this->setMPDFOptions($mpdf, $response->data['mPDFOptions']);
+            if ($this->beforeWrite !== null)
+                call_user_func($this->beforeWrite, $mpdf);
             if (isset($response->data['content']))
                 $mpdf->WriteHTML($response->data['content'], 2);
         }
@@ -141,7 +150,7 @@ class MPDFResponseFormatter extends Component implements ResponseFormatterInterf
     {
         if (!is_array($options))
             return;
-
+        
         foreach ($options as $attribute => $value) {
             $this->$attribute = $value;
 
